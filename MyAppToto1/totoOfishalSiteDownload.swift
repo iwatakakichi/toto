@@ -60,7 +60,7 @@ func totoOfficialSiteDownLoad(sale:String) ->Bool {
             }
             if (String(c) == "<" || String(c) == "（") || String(c) == "た" {
                 if (cell != "" &&  cell != "<"){
-                      print("row = \(row) cell - \(cell)")     //  totoオフィシャルサイトのレイアウトが変わったらここに戻っておいで
+                    //  print("row = \(row) cell - \(cell)")     //  totoオフィシャルサイトのレイアウトが変わったらここに戻っておいで
                     row += 1
                     cells.append(cell)
                     cell = ""
