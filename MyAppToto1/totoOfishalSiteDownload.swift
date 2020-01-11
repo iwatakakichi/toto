@@ -32,6 +32,7 @@ func totoOfficialSiteDownLoad(sale:String) ->Bool {
     str = temporaryString.replacingOccurrences(of: "\n", with: "")
     
     if str.contains("ご指定の投票状況は表示できません。"){
+        homeScreen.sale = "ご指定の投票状況は表示できません。"
         print("totoOfficialSiteDownLoad contains　ご指定の投票状況は表示できません。")
         return false
     }else if str.contains("中止"){
@@ -59,7 +60,7 @@ func totoOfficialSiteDownLoad(sale:String) ->Bool {
             }
             if (String(c) == "<" || String(c) == "（") || String(c) == "た" {
                 if (cell != "" &&  cell != "<"){
-                    //  print("row = \(row) cell - \(cell)")     //  totoオフィシャルサイトのレイアウトが変わったらここに戻っておいで
+                      print("row = \(row) cell - \(cell)")     //  totoオフィシャルサイトのレイアウトが変わったらここに戻っておいで
                     row += 1
                     cells.append(cell)
                     cell = ""
@@ -100,79 +101,17 @@ func totoOfficialSiteDownLoad(sale:String) ->Bool {
             managment.match[match][2] = (cells[myPoint])
         }
         managment.calcRate()
+        
+        for i in 0...cells.count - 1 {
+            if cells[i] == "販売期間" {
+                homeScreen.sale = cells[i + 1]
+                break
+            }
+        }
+            
     }
 
     return true
-}
-
-func lotterySaleDownLoad(sale:Int) ->(Bool,String){
-    //  MARK:トトオフィシャルサイトから開催情報をダンロード
-    //  let formatter = DateFormatter()
-    //  formatter.dateFormat = "yyyy-MM-dd' 'HH:mm:ss"
-    //  let now = Date()
-    //  print("\(now) start LotteryKaisaiDownLoad関数 \(homeScreen.sale)")
-    
-    let url = URL(string: "http://www.toto-dream.com/dci/I/IPA/IPA01.do?op=disptotoLotInfo&holdCntId=" +  String(format: "%04d",homeScreen.user[ch.sale]))!
-     
-    let ss = HttpClientImpl()
-    let t = ss.execute(request: URLRequest(url: url))
-    let getData: NSString = NSString(data: t.0! as Data, encoding: String.Encoding.utf8.rawValue)!
-    let myStr = getData as String
-    let (error,rezalt) = lotterySale(text: myStr)
-    
-    return (error,rezalt)
-    
-}
-
-func lotterySale(text:String)->(Bool,String){
-    //  MARK:トトオフィシャルサイトから開催情報をダンロードしたデータを編集
-    //  let formatter = DateFormatter()
-    //  formatter.dateFormat = "yyyy-MM-dd' 'HH:mm:ss"
-    //  let now = Date()
-    //  print("\(now) start LotteryKaisai関数")
-    
-    var temporaryString = text.replacingOccurrences(of: " ", with: "")
-    var str = temporaryString.replacingOccurrences(of: ",", with: "")
-    temporaryString = str.replacingOccurrences(of: "\r", with: "")
-    str = temporaryString.replacingOccurrences(of: "\n", with: "")
-    var rezult: String = ""
-    //  MARK:   word 切り出し--------------------------
-    var cell = ""
-    var cells = Array<String>()
-    var stack = 0
-    var beforeStr = ""
-    var row = 0
-    
-    for c in str {
-        if stack < 0 {
-            cell = cell + beforeStr
-            stack -= 1
-        }
-        if (beforeStr == ">" && String(c) != "<"){
-            stack -= 1  //  push
-        }
-        if (String(c) == "<" || String(c) == "（") || String(c) == "た" {
-            if (cell != "" &&  cell != "<"){
-                  print("row = \(row) cell - \(cell)")    //   totoオフィシャルサイトのレイアウトが変わったらここに戻っておいで
-                row += 1
-                cells.append(cell)
-                cell = ""
-                stack = 0  //  pop
-            }
-        }
-        beforeStr = String(c)
-    }
-    
-    //  MARK:  結果のセット--------------------------
-    let CheckString:String = "第" + String(homeScreen.user[ch.sale])  + "回totoくじ情報"
-
-    if cells[20] != CheckString{
-        rezult = "第" + String(homeScreen.user[ch.sale])  + "回　開催情報は発表されていません。"
-        return (false,rezult)
-    }
-    rezult = cells[21] + "  " + cells[22] + "  " + cells[23] + "  " + cells[24] + "  " + cells[25] + "  " + cells[26]
-    
-    return (true,rezult)
 }
 
 func lotteryResultDownLoad(sale:Int) ->Bool {

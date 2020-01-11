@@ -126,12 +126,14 @@ struct HomeScreenControl {
     var matchResult: Array<Int> = Array<Int>(repeating: 0,count:13)
     var prize: Int
     var announcement: Int
+    var sale: String
 
-    init(user: [Int],matchResult:[Int],prize: Int,announcement:Int){
+    init(user: [Int],matchResult:[Int],prize: Int,announcement:Int,sale: String){
         self.user = user
         self.matchResult = matchResult
         self.prize = prize
         self.announcement = announcement
+        self.sale = sale
     }
 }
 
@@ -143,7 +145,7 @@ struct ch {
     static let announcement = 4
 }
 
-var homeScreen = HomeScreenControl(user:[1121,200_000_000,0,0,0],matchResult:Array<Int>(repeating: 0,count:13),prize:0,announcement:0)
+var homeScreen = HomeScreenControl(user:[1121,200_000_000,0,0,0],matchResult:Array<Int>(repeating: 0,count:13),prize:0,announcement:0,sale:"")
 
 //  MARK:  MultiScreenControl
 struct MultiScreenControl {
