@@ -14,8 +14,8 @@ func totoOfficialSiteDownLoad(sale:String) ->Bool {
     //  ormatter.dateFormat = "yyyy-MM-dd' 'HH:mm:ss"
     //  let now = Date()
     //  print("\(now) start totoOfishalSiteDownLoad関数")
-    
-    let url = URL(string:"http://www.toto-dream.com/dci/I/IPC/IPC01.do?op=initVoteRate&commodityId=01&holdCntId=" +  String(format: "%04d",homeScreen.user[ch.sale]))!
+    let url = URL(string:"https://store.toto-dream.com/dcs/subos/screen/pi09/spin003/PGSPIN00301InitVoteRate.form?popup=disp&commodityId=01&holdCntId=" + String(format: "%04d",homeScreen.user[ch.sale]))!
+    //let url = URL(string:"http://www.toto-dream.com/dci/I/IPC/IPC01.do?op=initVoteRate&commodityId=01&holdCntId=" +  String(format: "%04d",homeScreen.user[ch.sale]))!
     let ss = HttpClientImpl()
     let t = ss.execute(request: URLRequest(url: url))
     if t.2 != nil{
@@ -72,13 +72,13 @@ func totoOfficialSiteDownLoad(sale:String) ->Bool {
         //  MARK:   チーム、投票数をそれぞれの配列に格納 -----
         var Increment = 0
         var offset = 0      //  試合No.１のチーム名
-        for i in 0...21{
-            if cells[i] == "1"{
+        for i in 0...50 {
+            if cells[i] == "1" {
                 offset = i
             }
         }
-        for i in 0...30 {
-            if cells[i] == "2"{
+        for i in 0...50 {
+            if cells[i] == "2" {
                 Increment = i - offset
             }
         }
@@ -101,6 +101,7 @@ func totoOfficialSiteDownLoad(sale:String) ->Bool {
         }
         managment.calcRate()
     }
+
     return true
 }
 
@@ -112,6 +113,7 @@ func lotterySaleDownLoad(sale:Int) ->(Bool,String){
     //  print("\(now) start LotteryKaisaiDownLoad関数 \(homeScreen.sale)")
     
     let url = URL(string: "http://www.toto-dream.com/dci/I/IPA/IPA01.do?op=disptotoLotInfo&holdCntId=" +  String(format: "%04d",homeScreen.user[ch.sale]))!
+     
     let ss = HttpClientImpl()
     let t = ss.execute(request: URLRequest(url: url))
     let getData: NSString = NSString(data: t.0! as Data, encoding: String.Encoding.utf8.rawValue)!
@@ -151,7 +153,7 @@ func lotterySale(text:String)->(Bool,String){
         }
         if (String(c) == "<" || String(c) == "（") || String(c) == "た" {
             if (cell != "" &&  cell != "<"){
-                //  print("row = \(row) cell - \(cell)")    //   totoオフィシャルサイトのレイアウトが変わったらここに戻っておいで
+                  print("row = \(row) cell - \(cell)")    //   totoオフィシャルサイトのレイアウトが変わったらここに戻っておいで
                 row += 1
                 cells.append(cell)
                 cell = ""
@@ -180,7 +182,8 @@ func lotteryResultDownLoad(sale:Int) ->Bool {
     //  let now = Date()
     //  print("\(now) start LotteryResultDownLoad関数 \(Kaisaikai)")
     
-    let url = URL(string: "http://www.toto-dream.com/dci/I/IPB/IPB01.do?op=lnkHoldCntLotResultLsttoto&holdCntId=" +  String(format: "%04d",sale))!
+    //let url = URL(string: "http://www.toto-dream.com/dci/I/IPB/IPB01.do?op=lnkHoldCntLotResultLsttoto&holdCntId=" +  String(format: "%04d",sale))!
+    let url = URL(string: "https://store.toto-dream.com/dcs/subos/screen/pi04/spin011/PGSPIN01101LnkHoldCntLotResultLsttoto.form?holdCntId="  +  String(format: "%04d",sale))!
     let ss = HttpClientImpl()
     let t = ss.execute(request: URLRequest(url: url))
     let getData: NSString = NSString(data: t.0! as Data, encoding: String.Encoding.utf8.rawValue)!

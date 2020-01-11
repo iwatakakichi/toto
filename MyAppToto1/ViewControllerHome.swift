@@ -117,9 +117,10 @@ class ViewControllerHome: NSViewController {
     }
 
     @IBAction func kaisai(_ sender: Any) {
-         //  MARK:開催・非開催確認
-        let (_,rezalt) = lotterySaleDownLoad(sale: homeScreen.user[ch.sale])
-        guidance1Label.stringValue = rezalt
+        //  MARK:開催・非開催確認 2020/1/11オフィシャルサイトの名称と一部URLの変更があり参照出来なくなった
+        //  let (_,rezalt) = lotterySaleDownLoad(sale: homeScreen.user[ch.sale])
+        //  guidance1Label.stringValue = rezalt
+       guidance1Label.stringValue = ""
     }
 
     @IBAction func tohyo(_ sender: Any) {
