@@ -276,7 +276,7 @@ class ViewControllerAnalysis: NSViewController, NSTableViewDataSource  {
         var url = URL(string: "http://www.toto-dream.com/dci/I/IPB/IPB01.do?op=initLotResultLsttoto")!
         if resultScreen.stockYear != resultScreen.labelYear{
             resultScreen.stockYear = resultScreen.labelYear
-            url = URL(string: "http://www.toto-dream.com/dci/I/IPB/IPB01.do?op=lnkSeasonLotResultLsttoto&meetingFiscalYear=" + String(resultScreen.labelYear))!
+            url = URL(string: "https://store.toto-dream.com/dcs/subos/screen/pi04/spin011/PGSPIN01101LnkSeasonLotResultLsttoto.form?popupDispDiv=disp&meetingFiscalYear=" + String(resultScreen.labelYear))!
             //  print("resultScreen.stockYear \(resultScreen.stockYear) resultScreen.labelYear \(resultScreen.labelYear)")
             let ss = HttpClientImpl()
             let t = ss.execute(request: URLRequest(url: url))
