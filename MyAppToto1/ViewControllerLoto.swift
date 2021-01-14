@@ -80,10 +80,10 @@ class ViewControllerLoto: NSViewController {
         }
         var _ = defaultsLoad()
 
-        //  3秒ごとにタイマー発火
+        //  5秒ごとにタイマー発火
         lotoManage.counter = 0
         lotoManage.distribution.sort { $0[0] < $1[0] }
-        timer = Timer.scheduledTimer(timeInterval: 3.0, target: self, selector: #selector(self.update), userInfo: nil, repeats: true)
+        timer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(self.update), userInfo: nil, repeats: true)
         timer.fire()
     
         for cell in 0...lotoManage.markOfloto - 1{
@@ -156,7 +156,6 @@ class ViewControllerLoto: NSViewController {
                 if  lotoManage.drivingMode == off {
                     if lotoManage.judgmentResult[cb.continuousNumber.rawValue] == on{
                         for column in 0...lotoManage.markOfloto - 1{
-                            
                             let point = lotoManage.mark[row][column] - 1
                             lotoManage.occurrences[point] += 1
                         }
@@ -185,6 +184,7 @@ class ViewControllerLoto: NSViewController {
             }
  
         }
+        
         if lotoManage.quickPick == Array<Int>(repeating: on,count:5){
             for colum in 0...carMatrix.cells.count  - 1{
                 carMatrix.cells[colum].image = NSImage(named: NSImage.Name(""))
@@ -199,7 +199,7 @@ class ViewControllerLoto: NSViewController {
     }
     //  検索エンジン
     func searchEngine(inDt: [Int]) -> [Int]{
-        var validationNumber = inDt
+        let validationNumber = inDt
         var judgment = Array<Int>(repeating: off,count:6)
         
         //A よく出る数字（完全一致）
@@ -255,18 +255,24 @@ class ViewControllerLoto: NSViewController {
             judgment[3] += 1
             lotoManage.hitRezult[3] += 1
         }
-        //E  数の偏り
+        //  数の偏り
         var group2 = 0
-        let start = lotoManage.group[lotoManage.category][0] - 1
+        var start = lotoManage.group[lotoManage.category][0] - 1
+        if start == -1{
+            // xcode ヴァージョンアップ時
+            start = 0
+        }
         for cell in start...lotoManage.markOfloto - 1{
             if validationNumber[cell] >= lotoManage.group[lotoManage.category][1] {
                 group2 += 1
             }
         }
+    
         if group2 >= lotoManage.group[lotoManage.category][2]{
             judgment[4] += 1
             lotoManage.hitRezult[4] += 1
         }
+ 
         //F  スコア
         var score = 0
         for cell in 0...lotoManage.markOfloto - 1{
@@ -642,7 +648,7 @@ class ViewControllerLoto: NSViewController {
             for colum in 0...carMatrix.cells.count  - 1{
                 carMatrix.cells[colum].image = NSImage(named: NSImage.Name(""))
             }
-            timer = Timer.scheduledTimer(timeInterval: 3.0, target: self, selector: #selector(self.update), userInfo: nil, repeats: true)
+            timer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(self.update), userInfo: nil, repeats: true)
             timer.fire()
         }
         if lotoManage.drivingMode == on {
