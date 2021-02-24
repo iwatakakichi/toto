@@ -27,6 +27,7 @@ class ViewControllerLoto: NSViewController {
     @IBOutlet weak var hitMatrix: NSMatrix!
     @IBOutlet weak var rejectionMatrix: NSMatrix!
     @IBOutlet weak var groupMatrix: NSMatrix!
+    @IBOutlet weak var colorButton: NSButton!
     @IBOutlet weak var lastWinMatrix: NSMatrix!
     @IBOutlet weak var average: NSTextField!
     @IBOutlet weak var labelA: NSTextField!
@@ -67,19 +68,17 @@ class ViewControllerLoto: NSViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         // Do view setup here.
         setAudio()
         if lotoManage.graphCategory ==  gc.dotChart.rawValue{
             graphCategoryButton.setState(1, atRow: 0, column: 1)
         }
-        let strs = ["set い","set ろ","set は"]
+        let strs = ["set い","set ろ","set は","set に"]
         popUpButton.removeAllItems()
         for str in strs{
             popUpButton.addItem(withTitle: str)
         }
         var _ = defaultsLoad()
-
         //  5秒ごとにタイマー発火
         lotoManage.counter = 0
         lotoManage.distribution.sort { $0[0] < $1[0] }
@@ -185,7 +184,7 @@ class ViewControllerLoto: NSViewController {
  
         }
         
-        if lotoManage.quickPick == Array<Int>(repeating: on,count:5){
+        if lotoManage.quickPick == Array<Int>(repeating: on,count:5) {
             for colum in 0...carMatrix.cells.count  - 1{
                 carMatrix.cells[colum].image = NSImage(named: NSImage.Name(""))
             }
@@ -255,33 +254,24 @@ class ViewControllerLoto: NSViewController {
             judgment[3] += 1
             lotoManage.hitRezult[3] += 1
         }
-        //  数の偏り
-        var group2 = 0
-        var start = lotoManage.group[lotoManage.category][0] - 1
-        if start == -1{
-            // xcode ヴァージョンアップ時
-            start = 0
-        }
-        for cell in start...lotoManage.markOfloto - 1{
-            if validationNumber[cell] >= lotoManage.group[lotoManage.category][1] {
-                group2 += 1
+        //   指定番号
+        for  colum in 0...lotoManage.group[lotoManage.category].count - 1{
+            if lotoManage.counter == lotoManage.group[lotoManage.category][colum]{
+                judgment[4] += 1
             }
         }
-    
-        if group2 >= lotoManage.group[lotoManage.category][2]{
-            judgment[4] += 1
-            lotoManage.hitRezult[4] += 1
+        
+        //F  カラー
+        var colorBox: Array<Int> = Array<Int>(repeating: 0,count:7)
+        for column in 0...lotoManage.markOfloto - 1 {
+            let point:Int = validationNumber[column] % colorBox.count
+            colorBox[point] += 1
         }
- 
-        //F  スコア
-        var score = 0
-        for cell in 0...lotoManage.markOfloto - 1{
-            score = score + lotoManage.distribution[validationNumber[cell] - 1][2]
-        }
-        if score >= lotoManage.score[lotoManage.category]{
-            lotoManage.hitRezult[5] += 1
-            judgment[5] += 1
-        }
+        //for column in 0...lotoManage.markOfloto - 1 {
+        if colorBox[lotoManage.color[lotoManage.category]] > 2 {
+                judgment[5] += 1
+            }
+       // }
         
         //  評価せず
         for row in 0...lotoManage.conditionsSet[0].count - 1{
@@ -321,6 +311,13 @@ class ViewControllerLoto: NSViewController {
         for cell in 0...2 {
              groupMatrix.cells[cell].stringValue = String(lotoManage.group[lotoManage.category][cell])
         }
+        let color: String = "ball" + String(lotoManage.color[lotoManage.category])
+        colorButton.image =  NSImage(named: NSImage.Name(color))
+        if lotoManage.color[lotoManage.category] == 0 {
+            colorButton.title = "7"
+        } else {
+            colorButton.title = String(lotoManage.color[lotoManage.category])
+        }
         lotoManage.lastWinNumber = Array<Int>(repeating: 0,count:7)
         for cell in 0...lotoManage.lastWinNumber.count - 1{
             lastWinMatrix.cells[cell].stringValue = transfromFromZeroToBlank(inDt: lotoManage.lastWinNumber[cell])
@@ -338,6 +335,8 @@ class ViewControllerLoto: NSViewController {
         lotoManage.keyboardMode = dm.normal.rawValue
         var _ = lotoManage.initializeKeyboard()
         var _ = changeTheKeyPad()
+        
+        
     }
     
     @IBAction func rakuten(_ sender: Any) {
@@ -351,6 +350,8 @@ class ViewControllerLoto: NSViewController {
                 }
             }
         }
+        
+        var _ = setMaskNumber()
     }
     
     private func display(_ completionHandler: () -> Void) {
@@ -629,7 +630,7 @@ class ViewControllerLoto: NSViewController {
         labelCount.stringValue = ""
         lotoManage.quickPick =  Array<Int>(repeating: off,count:5)
         for row in 0...4{
-            _ = blackMark(inDt:row)
+            var _ = blackMark(inDt:row)
         }
         lotoManage.hitRezult = Array<Int>(repeating: 0,count:6)
         for cell in 0...lotoManage.hitRezult.count - 1 {
@@ -639,6 +640,7 @@ class ViewControllerLoto: NSViewController {
             quickPickMatrix.cells[row].title =  "クイックピック"
         }
         if lotoManage.drivingMode == off {
+            
             drivingModeBUtton.title = "idling"
             nextQuickButton.title = ""
             nextQuickLabel.stringValue = ""
@@ -656,8 +658,8 @@ class ViewControllerLoto: NSViewController {
             nextQuickButton.title = "△"
             lotoManage.mark =  [[Int]](repeating: [Int](repeating: 0, count: 7),count: 5)
             for row in 0...4{
-                _ = setShuffleNumber(inDt:row)
-                _ = blackMark(inDt:row)
+                var _ = setShuffleNumber(inDt:row)
+                var _ = blackMark(inDt:row)
             }
             lotoManage.counter = 0
             timer = Timer.scheduledTimer(timeInterval: lotoManage.cpuTimeInterval, target: self, selector: #selector(self.update), userInfo: nil, repeats: true)
@@ -698,14 +700,50 @@ class ViewControllerLoto: NSViewController {
     }
     
     @IBAction func nextQuick(_ sender: Any) {
+        
         let const:Array = ["A","B","C","D","E"]
         nextQuick += 1
         nextQuick = nextQuick % 5
+       
         nextQuickLabel.stringValue = const[nextQuick]
         lotoManage.layer[0] = Array<Int>(repeating: 0,count:43)
         var _ = setLayer(inDt: lotoManage.mark[nextQuick], layer: ly.redCircle.rawValue)
         var _ = changeTheKeyPad()
         var _ = displayLayer()
+        
+        guard nextQuick == 0 else {
+            return
+        }
+        
+        hittitle.stringValue = ""
+        Kilometers = -1
+        labelCount.stringValue = ""
+        lotoManage.quickPick =  Array<Int>(repeating: off,count:5)
+        for row in 0...4{
+            var _ = blackMark(inDt:row)
+        }
+        lotoManage.hitRezult = Array<Int>(repeating: 0,count:6)
+        for cell in 0...lotoManage.hitRezult.count - 1 {
+            hitMatrix.cells[cell].stringValue = transfromFromZeroToBlank(inDt: lotoManage.hitRezult[cell])
+        }
+        for row in 0...4{
+            quickPickMatrix.cells[row].title =  "クイックピック"
+        }
+
+        if lotoManage.drivingMode == on {
+            drivingModeBUtton.title = "automatic drive"
+            nextQuickButton.title = "△"
+            lotoManage.mark =  [[Int]](repeating: [Int](repeating: 0, count: 7),count: 5)
+            for row in 0...4{
+                var _ = setShuffleNumber(inDt:row)
+                var _ = blackMark(inDt:row)
+            }
+            lotoManage.counter = 0
+            timer = Timer.scheduledTimer(timeInterval: lotoManage.cpuTimeInterval, target: self, selector: #selector(self.update), userInfo: nil, repeats: true)
+            timer.fire()
+            nextQuickLabel.stringValue = "next"
+        }
+        
     }
     
     @IBAction func group(_ sender: Any) {
@@ -713,24 +751,27 @@ class ViewControllerLoto: NSViewController {
             return
         }
         let colum = matrix.selectedColumn
-        
-        if matrix.cells[colum].intValue == 0 {
-            matrix.cells[colum].intValue = 1
-        }
-        if colum == 0 && matrix.cells[colum].intValue > lotoManage.markOfloto {
-            matrix.cells[colum].stringValue = String(lotoManage.markOfloto)
-        }
-        if colum == 1 && matrix.cells[colum].intValue > lotoManage.sizeOfloto {
-            matrix.cells[colum].stringValue = String(lotoManage.sizeOfloto)
-        }
-        if colum == 2 && matrix.cells[colum].intValue > lotoManage.markOfloto {
-            matrix.cells[colum].stringValue = String(lotoManage.markOfloto)
-        }
-        
         lotoManage.group[lotoManage.category][colum] = Int(groupMatrix.cells[colum].intValue)
         UserDefaults.standard.set(lotoManage.group, forKey: "groupArray")
         
     }
+    
+    @IBAction func color(_ sender: Any) {
+        
+       // edit
+        lotoManage.color[lotoManage.category] += 1
+        lotoManage.color[lotoManage.category] = lotoManage.color[lotoManage.category] % 7
+        let color: String = "ball" + String(lotoManage.color[lotoManage.category])
+        colorButton.image =  NSImage(named: NSImage.Name(color))
+        if lotoManage.color[lotoManage.category] == 0 {
+            colorButton.title = "7"
+        } else {
+            colorButton.title = String(lotoManage.color[lotoManage.category])
+        }
+        UserDefaults.standard.set(lotoManage.color,forKey: "colorArray")
+    }
+    
+    
     @IBAction func recently(_ sender: Any) {
         guard let matrix = sender as? NSMatrix else {
             return
@@ -769,14 +810,14 @@ class ViewControllerLoto: NSViewController {
         
         let tag = Int((sender as AnyObject).tag)
         for cell in 0...lotoManage.markOfloto - 1{
-            if  lotoManage.myNumber[tag][cell] > 0 {
-                lotoManage.selectionNumber[cell] = lotoManage.myNumber[tag][cell]
+            if  lotoManage.myNumber[lotoManage.category][tag][cell] > 0 {
+                lotoManage.selectionNumber[cell] = lotoManage.myNumber[lotoManage.category][tag][cell]
                 selectionMatrix.cells[cell].intValue = Int32(lotoManage.selectionNumber[cell])
             }
         }
         lotoManage.layer[0] = Array<Int>(repeating: 0,count:43)
         var _ = changeTheKeyPad()
-        var _ = setLayer(inDt: lotoManage.myNumber[Int((sender as AnyObject).tag)], layer: ly.redCircle.rawValue)
+        var _ = setLayer(inDt: lotoManage.myNumber[lotoManage.category][Int((sender as AnyObject).tag)], layer: ly.redCircle.rawValue)
         var _ = displayLayer()
     }
 
@@ -801,7 +842,7 @@ class ViewControllerLoto: NSViewController {
     @IBAction func SetMyStamp(_ sender: Any) {
         lotoManage.popUpButton = Int(popUpButton.indexOfSelectedItem)
         for cell in 0...lotoManage.markOfloto - 1{
-            lotoManage.myNumber[lotoManage.popUpButton][cell] = lotoManage.selectionNumber[cell]
+            lotoManage.myNumber[lotoManage.category][lotoManage.popUpButton][cell] = lotoManage.selectionNumber[cell]
         }
         var _ = setMaskNumber()
         UserDefaults.standard.set(lotoManage.myNumber,forKey: "myNUmberArray")
@@ -903,7 +944,7 @@ class ViewControllerLoto: NSViewController {
             }
         }
         if (userDefaults.object(forKey: "myNUmberArray") != nil) {
-            lotoManage.myNumber = userDefaults.array(forKey: "myNUmberArray") as! [[Int]]
+            lotoManage.myNumber = userDefaults.array(forKey: "myNUmberArray") as! [[[Int]]]
             var _ = setMaskNumber()
         }
         if (userDefaults.object(forKey: "rakutenArray") != nil) {
@@ -912,6 +953,7 @@ class ViewControllerLoto: NSViewController {
         if (userDefaults.object(forKey: "distributionArray") != nil) {
             lotoManage.distribution = userDefaults.array(forKey: "distributionArray") as! [[Int]]
         }
+        
         if (userDefaults.object(forKey: "groupArray") != nil) {
             lotoManage.group = userDefaults.array(forKey: "groupArray") as! [[Int]]
             for colum in 0...lotoManage.group[0].count - 1{
@@ -922,6 +964,18 @@ class ViewControllerLoto: NSViewController {
                 groupMatrix.cells[colum].stringValue = String(lotoManage.group[lotoManage.category][colum])
             }
         }
+        // edit
+        if (userDefaults.object(forKey: "colorArray") != nil) {
+            lotoManage.color =  userDefaults.array(forKey: "colorArray")  as! Array<Int>
+            let color: String = "ball" + String(lotoManage.color[lotoManage.category])
+            colorButton.image =  NSImage(named: NSImage.Name(color))
+            if lotoManage.color[lotoManage.category] == 0 {
+                colorButton.title = "7"
+            } else {
+                colorButton.title = String(lotoManage.color[lotoManage.category])
+            }
+        }
+  
         if (userDefaults.object(forKey: "overallsArray") != nil) {
             lotoManage.overalls =  userDefaults.array(forKey: "overallsArray")  as! Array<Int>
             for cell in 0...lotoManage.overalls.count - 1{
@@ -1194,14 +1248,26 @@ class ViewControllerLoto: NSViewController {
     //  MARK:よくでた数字の編集
     func setMaskNumber() {
         for cell in 0...3{
-            if lotoManage.myNumber[cell] != Array<Int>(repeating: off,count:7){
-                var str = String(lotoManage.myNumber[cell][0]) + "."
-                str = str + String(lotoManage.myNumber[cell][1]) + "."
-                str = str + String(lotoManage.myNumber[cell][2]) + "."
-                str = str + String(lotoManage.myNumber[cell][3]) + "."
-                str = str + String(lotoManage.myNumber[cell][4]) + "."
-                str = str + String(lotoManage.myNumber[cell][5]) + "."
-                str = str + String(lotoManage.myNumber[cell][6]) + "."
+            if lotoManage.myNumber[lotoManage.category][cell] != Array<Int>(repeating: off,count:7){
+                var str = String(lotoManage.myNumber[lotoManage.category][cell][0])
+                if lotoManage.myNumber[lotoManage.category][cell][1] > 0 {
+                    str = str + "." + String(lotoManage.myNumber[lotoManage.category][cell][1])
+                }
+                if lotoManage.myNumber[lotoManage.category][cell][2] > 0 {
+                    str = str + "." + String(lotoManage.myNumber[lotoManage.category][cell][2])
+                }
+                if lotoManage.myNumber[lotoManage.category][cell][3] > 0 {
+                    str = str + "." + String(lotoManage.myNumber[lotoManage.category][cell][3])
+                }
+                if lotoManage.myNumber[lotoManage.category][cell][4] > 0 {
+                    str = str + "." + String(lotoManage.myNumber[lotoManage.category][cell][4])
+                }
+                if lotoManage.myNumber[lotoManage.category][cell][5] > 0 {
+                    str = str + "." + String(lotoManage.myNumber[lotoManage.category][cell][5])
+                }
+                if lotoManage.myNumber[lotoManage.category][cell][6] > 0 {
+                    str = str + "." + String(lotoManage.myNumber[lotoManage.category][cell][6])
+                }
                 kanaMatrix.cells[cell].stringValue = str
             }
         }
@@ -1296,6 +1362,7 @@ class ViewControllerLoto: NSViewController {
             }
         }
     }
+    
     func sportsCarDrive(_ completionHandler: () -> Void)  {
         let uriageKingaku = 2_400_000_000
         let category = ["ミニロト","ロト６","ロト７"]
@@ -1382,7 +1449,7 @@ class ViewControllerLoto: NSViewController {
     }
     
     func packBall(inDt:[Int]) -> Int {
-        var ballSet = inDt
+        let ballSet = inDt
         var ballSetInt = 0
         for cell in 0...lotoManage.markOfloto - 1 {
             ballSetInt = ballSetInt + (ballSet[cell] * Int(100^^cell))

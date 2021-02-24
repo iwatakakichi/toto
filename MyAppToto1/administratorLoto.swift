@@ -22,7 +22,7 @@ struct Manager {
     var keyboard: Array<Int> = Array<Int>(repeating: 0,count:43)
     var layer = [[Int]](repeating: [Int](repeating: 0, count: 43),count: 2)
     var tab: Int = 0
-    var myNumber = [[Int]](repeating: [Int](repeating: 0, count: 7),count: 4)   //  い、ろ、は、に
+    var myNumber = [[[Int]]](repeating: [[Int]](repeating: [Int](repeating: 0, count: 7),count: 4),count:3)   //  category,い、ろ、は、に
     var popUpButton: Int = 0
     var distribution: [[Int]] = [[Int]](repeating: [Int](repeating: 0, count: 3),count: 43) //  番号、すべて、直近
     var conditionsSet = [[Int]](repeating: [Int](repeating: 0, count: 6),count: 3) // [category] [0.よく出る数字1.前回当選番号2.連続した数字4.下１桁.5数字の偏り6.スコア]
@@ -30,7 +30,8 @@ struct Manager {
     var rejectedNumber: Array<Int> = Array<Int>(repeating: 0,count:7)
     var lastWinNumber: Array<Int> = Array<Int>(repeating: 0,count:7)
     var judgmentResult:Array<Int> = Array<Int>(repeating: 0,count:6)
-    var group = [[Int]](repeating: [Int](repeating: 0, count: 3),count: 3)//[category][マークの◯番目以降に、🔺数字が▲個存在する]
+    var group = [[Int]](repeating: [Int](repeating: 0, count: 5),count: 3)//[category][マークの◯番目以降に、🔺数字が▲個存在する]
+    var color:  Array<Int> = Array<Int>(repeating: 0,count:3)
     var hitRezult: Array<Int> = Array<Int>(repeating: 0,count:6)
     var mark = [[Int]](repeating: [Int](repeating: 0, count: 7),count: 5)   //[A〜E][mark]
     var occurrences:Array<Int> = Array<Int>(repeating: 0,count:43)
@@ -47,7 +48,7 @@ struct Manager {
     var slider:Int = 0
     var page: Int = 0
 
-    init(category:Int,kaigo:Int,drivingMode:Int,keyboardMode:Int,myNumber:[[Int]],popUpButton:Int,counter:Int,cpuTimeInterval:Double,keyboard:[Int],layer:[[Int]],tab:Int,distribution:[[Int]],conditionsSet:[[Int]],selectionNumber:[Int],rejectedNumber:[Int],lastWinNumber:[Int],judgmentResult:[Int],group:[[Int]],hitRezult:[Int],mark:[[Int]],occurrences:[Int],quickPick:[Int],backPosition:Int,overalls:[Int],recently:[Int],score:[Int],rakutenData:[[Int]],graphdraw:Int,graphCategory:Int,sizeOfloto:Int,markOfloto:Int,slider:Int,page:Int) {
+    init(category:Int,kaigo:Int,drivingMode:Int,keyboardMode:Int,myNumber:[[[Int]]],popUpButton:Int,counter:Int,cpuTimeInterval:Double,keyboard:[Int],layer:[[Int]],tab:Int,distribution:[[Int]],conditionsSet:[[Int]],selectionNumber:[Int],rejectedNumber:[Int],lastWinNumber:[Int],judgmentResult:[Int],group:[[Int]],color:[Int],hitRezult:[Int],mark:[[Int]],occurrences:[Int],quickPick:[Int],backPosition:Int,overalls:[Int],recently:[Int],score:[Int],rakutenData:[[Int]],graphdraw:Int,graphCategory:Int,sizeOfloto:Int,markOfloto:Int,slider:Int,page:Int) {
         self.category = category
         self.kaigo = kaigo
         self.drivingMode = drivingMode
@@ -66,6 +67,7 @@ struct Manager {
         self.lastWinNumber = lastWinNumber
         self.judgmentResult = judgmentResult
         self.group = group
+        self.color = color
         self.hitRezult = hitRezult
         self.mark = mark
         self.occurrences = occurrences
@@ -138,7 +140,7 @@ enum gc:Int {
     case barChart = 0
     case dotChart = 1  
 }
-var lotoManage = Manager(category: 1,kaigo: 0,drivingMode: 0, keyboardMode:0,myNumber: [[Int]](repeating: [Int](repeating: 0, count: 7),count: 4),popUpButton:0,counter:0,cpuTimeInterval:3.0,keyboard: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43],layer: [[Int]](repeating: [Int](repeating: 0, count: 43),count: 2),tab:0,distribution: [[Int]](repeating: [Int](repeating: 0, count: 3),count: 43),conditionsSet: [[Int]](repeating: [Int](repeating: 0, count: 6),count: 3),selectionNumber: Array<Int>(repeating: 0,count:7), rejectedNumber: Array<Int>(repeating: 0,count:7), lastWinNumber: Array<Int>(repeating: 0,count:7),judgmentResult: Array<Int>(repeating: 1,count:6),group: [[Int]](repeating: [Int](repeating: 0, count: 3),count: 3),hitRezult:Array<Int>(repeating: 0,count:6),mark: [[Int]](repeating: [Int](repeating: 0, count: 7),count: 5),occurrences: Array<Int>(repeating: 0,count:43),quickPick: Array<Int>(repeating: 0,count:5),backPosition:0,overalls:Array<Int>(repeating: 0,count:3),recently:Array<Int>(repeating: 0,count:3),score:Array<Int>(repeating: 0,count:3),rakutenData:[[]],graphdraw: 0,graphCategory:0,sizeOfloto:43,markOfloto:6,slider: 0,page: 0)
+var lotoManage = Manager(category: 1,kaigo: 0,drivingMode: 0, keyboardMode:0,myNumber: [[[Int]]](repeating: [[Int]](repeating: [Int](repeating: 0, count: 7),count: 4),count:3),popUpButton:0,counter:0,cpuTimeInterval:3.0,keyboard: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43],layer: [[Int]](repeating: [Int](repeating: 0, count: 43),count: 2),tab:0,distribution: [[Int]](repeating: [Int](repeating: 0, count: 3),count: 43),conditionsSet: [[Int]](repeating: [Int](repeating: 0, count: 6),count: 3),selectionNumber: Array<Int>(repeating: 0,count:7), rejectedNumber: Array<Int>(repeating: 0,count:7), lastWinNumber: Array<Int>(repeating: 0,count:7),judgmentResult: Array<Int>(repeating: 1,count:6),group: [[Int]](repeating: [Int](repeating: 0, count: 5),count: 3),color: Array<Int>(repeating: 0,count:3),hitRezult:Array<Int>(repeating: 0,count:6),mark: [[Int]](repeating: [Int](repeating: 0, count: 7),count: 5),occurrences: Array<Int>(repeating: 0,count:43),quickPick: Array<Int>(repeating: 0,count:5),backPosition:0,overalls:Array<Int>(repeating: 0,count:3),recently:Array<Int>(repeating: 0,count:3),score:Array<Int>(repeating: 0,count:3),rakutenData:[[]],graphdraw: 0,graphCategory:0,sizeOfloto:43,markOfloto:6,slider: 0,page: 0)
 
 // MARK: transfromFromZeroToKome
 func transfromFromZeroToKome(inDt:Int)->String {
