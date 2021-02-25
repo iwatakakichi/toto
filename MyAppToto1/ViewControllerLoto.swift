@@ -267,11 +267,10 @@ class ViewControllerLoto: NSViewController {
             let point:Int = validationNumber[column] % colorBox.count
             colorBox[point] += 1
         }
-        //for column in 0...lotoManage.markOfloto - 1 {
+    
         if colorBox[lotoManage.color[lotoManage.category]] > 2 {
-                judgment[5] += 1
-            }
-       // }
+            judgment[5] += 1
+        }
         
         //  評価せず
         for row in 0...lotoManage.conditionsSet[0].count - 1{
@@ -905,6 +904,7 @@ class ViewControllerLoto: NSViewController {
         let calendar = Calendar.current
         var second = calendar.component(.second, from: date)
         second = second / 3
+        
         if beforeSecond != second{
             let numberOfframes = carMatrix.cells.count
             Kilometers += 1
@@ -914,22 +914,22 @@ class ViewControllerLoto: NSViewController {
             }
             if lotoManage.quickPick != Array<Int>(repeating: on,count:5) {
                 switch cell {
-                case 0:
-                carMatrix.cells[numberOfframes - cell - 1].image = NSImage(named: NSImage.Name("car2"))
-                case 1...(numberOfframes - 1):
-                carMatrix.cells[numberOfframes - cell - 1].image = NSImage(named: NSImage.Name("car1"))
-                if lotoManage.cpuTimeInterval == 0.00001{
-                    carMatrix.cells[numberOfframes - cell - 1].image = NSImage(named: NSImage.Name("car3"))
+                    case 0:
+                        carMatrix.cells[numberOfframes - cell - 1].image = NSImage(named: NSImage.Name("car2"))
+                    case 1...(numberOfframes - 1):
+                        carMatrix.cells[numberOfframes - cell - 1].image = NSImage(named: NSImage.Name("car1"))
+                        if lotoManage.cpuTimeInterval == 0.00001{
+                            carMatrix.cells[numberOfframes - cell - 1].image = NSImage(named: NSImage.Name("car3"))
+                        }
+                        labelCount.stringValue = separateComma(num: lotoManage.counter) + "m"
+                    default:
+                        print("error")
                 }
-                labelCount.stringValue = separateComma(num: lotoManage.counter) + "m"
-                default:
-                print("error")
-            }
             }
             beforeSecond = second
         }
     }
-    
+    //  MARK: 　リストア（ユーザーデフォルト)
     func defaultsLoad() {
         let userDefaults = UserDefaults.standard
         
@@ -1228,7 +1228,7 @@ class ViewControllerLoto: NSViewController {
         }
         return Double(lotoManage.sizeOfloto) / 2.0 - total / Double(lotoManage.markOfloto)
     }
-    // size
+    // MARK: categoryからサイズ及びマークをセットする
     func size(inDt: Int){
         switch inDt {
         case 0:
@@ -1272,7 +1272,7 @@ class ViewControllerLoto: NSViewController {
             }
         }
     }
-    //  mark:   選択中の文字を表示する
+    //  MARK: 選択中の文字を表示する
     func setQuickPick(inDt:Int){
         let row = inDt
         quickPickMatrix.cells[row].title = "選択中"
@@ -1304,13 +1304,13 @@ class ViewControllerLoto: NSViewController {
         var _ = setLayer(inDt: lotoManage.selectionNumber, layer: ly.redCircle.rawValue)
         var _ = setLayer(inDt: lotoManage.rejectedNumber, layer: ly.redBollot.rawValue)
     }
-    //  MARK:  マイナンバーを表示する
+    //  MARK:マイナンバーを表示する
     func selectionNumberSet() {
         for cell in 0...lotoManage.markOfloto - 1{
             selectionMatrix.cells[cell].stringValue = transfromFromZeroToKome(inDt: lotoManage.selectionNumber[cell])
         }
     }
-    //  MARkk:  除外する数字を表示する
+    //  MARK: 除外する数字を表示する
     func rejectedNumberSet() {
         for cell in 0...lotoManage.markOfloto - 1{
             rejectionMatrix.cells[cell].stringValue = transfromFromZeroToKome(inDt: lotoManage.rejectedNumber[cell])
@@ -1456,6 +1456,7 @@ class ViewControllerLoto: NSViewController {
         }
         return ballSetInt
     }
+    
     func unPackBall(inDt:Int) ->[Int]{
         var ballSet = Array<Int>(repeating: 0,count:lotoManage.markOfloto)
         var remainder = inDt
