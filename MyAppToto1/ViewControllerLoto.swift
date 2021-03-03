@@ -476,50 +476,68 @@ class ViewControllerLoto: NSViewController {
         let row = matrix.selectedRow
         let colum = matrix.selectedColumn
         let push = row * 10 + colum
-        switch lotoManage.tab {
-        case off:
-            if (push >= lotoManage.sizeOfloto && push < 46){
-                audioPlayer?.play()
+        
+        if (push >= lotoManage.sizeOfloto && push < 46){
+            audioPlayer?.play()
+            return
+        }
+        
+        //  MARK:マークを外す edit
+        if push < lotoManage.sizeOfloto {
+            switch lotoManage.tab {
+            case off:
+                for cell in 0...lotoManage.selectionNumber.count - 1{
+                    if  lotoManage.selectionNumber[cell] == lotoManage.keyboard[push]{
+                        lotoManage.selectionNumber[cell] = 0
+                        numericKeypadMatrix.cells[push].image = NSImage(named: NSImage.Name("NSStatusNone"))
+                        var _ = selectionNumberSet()
+                        lotoManage.layer =  [[Int]](repeating: [Int](repeating: 0, count: 43),count: 2)
+                        return
+                    }
+                }
+            case on:
+                for cell in 0...lotoManage.rejectedNumber.count - 1{
+                    if lotoManage.rejectedNumber[cell] == lotoManage.keyboard[push] {
+                        lotoManage.rejectedNumber[cell] = 0
+                        numericKeypadMatrix.cells[push].image = NSImage(named: NSImage.Name("NSStatusNone"))
+                        var _ = rejectedNumberSet()
+                        lotoManage.layer =  [[Int]](repeating: [Int](repeating: 0, count: 43),count: 2)
+                        return
+                    }
+                }
+            default:
+                print("error")
             }
             
-            if push < lotoManage.sizeOfloto {
-                if lotoManage.selectionNumber[lotoManage.markOfloto - 1] > 0{
-                    audioPlayer?.play()
-                }else{
-                    for i in 0...lotoManage.markOfloto - 1{
-                        if lotoManage.selectionNumber[i] == 0{
+        }
+        //  MARK:マークする
+        if push < lotoManage.sizeOfloto {
+            switch lotoManage.tab {
+                case off:
+                    for i in 0...lotoManage.markOfloto - 1 {
+                        if lotoManage.selectionNumber[i] == 0 {
                             lotoManage.selectionNumber[i] = lotoManage.keyboard[push]
                             var _ = setLayer(inDt: lotoManage.selectionNumber, layer: ly.redCircle.rawValue)
                             var _ = displayLayer()
                             break
                         }
                     }
-                }
-                var _ = selectionNumberSet()
-            }
-        case on:
-            if (push >= lotoManage.sizeOfloto && push < 46){
-                audioPlayer?.play()
-            }
-            if push < lotoManage.sizeOfloto{
-                if lotoManage.rejectedNumber[lotoManage.markOfloto - 1] > 0{
-                    audioPlayer?.play()
-                }else{
-                    for i in 0...lotoManage.markOfloto - 1{
-                        if lotoManage.rejectedNumber[i] == 0{
+                    var _ = selectionNumberSet()
+                case on:
+                    for i in 0...lotoManage.markOfloto - 1 {
+                        if lotoManage.rejectedNumber[i] == 0 {
                             lotoManage.rejectedNumber[i] = lotoManage.keyboard[push]
                             var _ = setLayer(inDt: lotoManage.rejectedNumber, layer: ly.redBollot.rawValue)
                             var _ = displayLayer()
                             break
                         }
                     }
+                    var _ = rejectedNumberSet()
+                default:
+                    print("error")
                 }
-                var _ = rejectedNumberSet()
-            }
-        default:
-            print("error")
         }
-        //マイナンバー、除外する数字のタブ
+        //MARK:マイナンバー、除外する数字のタブ
         if push == 46{
             lotoManage.tab += 1
             lotoManage.tab = lotoManage.tab % 2
@@ -532,7 +550,7 @@ class ViewControllerLoto: NSViewController {
                 print("error")
             }
         }
-        //  グラフ描画
+        //  MARK:グラフ描画
         if push == 47{
             guard lotoManage.kaigo > 0 else {
                 audioPlayer?.play()
@@ -568,7 +586,7 @@ class ViewControllerLoto: NSViewController {
             }
             var _ = displayLayer()
         }
-        //  マスククリア
+        //  MARK:マスククリア
         if push == 48{
             lotoManage.selectionNumber = Array<Int>(repeating: 0,count:7)
             var _ = selectionNumberSet()
@@ -577,7 +595,7 @@ class ViewControllerLoto: NSViewController {
             lotoManage.layer = [[Int]](repeating: [Int](repeating: 0, count: 43),count: 2)
             var _ = changeTheKeyPad()
         }
-        //  キーボード切り替え
+        //  MARK:キーボード切り替え
         if push == 49 {
             guard lotoManage.kaigo > 0 else {
                 audioPlayer?.play()

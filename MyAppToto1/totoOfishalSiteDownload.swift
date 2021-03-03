@@ -136,7 +136,7 @@ func lotteryResultDownLoad(sale:Int) ->Bool {
         print("\(sale) 回　中止試合あり")
         return false
     }else{
-        _ = lotteryResult(text: myStr)
+       var _ = lotteryResult(text: myStr)
     }
         
     return true

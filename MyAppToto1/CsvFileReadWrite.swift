@@ -25,7 +25,7 @@ func teamNameUpload () -> Bool {
     
     do {
         let text = try String(contentsOf: targetTextFilePath!, encoding: String.Encoding.utf8)
-        var CsvString = text.components(separatedBy: ",")
+        let CsvString = text.components(separatedBy: ",")
         sportsNavi.shortName.removeAll()
         for i in 0...sn.registrationTeam - 1{
             sportsNavi.shortName.updateValue(CsvString[i * 2 + 1], forKey: CsvString[i * 2])
@@ -33,7 +33,7 @@ func teamNameUpload () -> Bool {
         }
         return true
     } catch let error as NSError {
-        var CsvString = initialValue.components(separatedBy: ",")
+        let CsvString = initialValue.components(separatedBy: ",")
         sportsNavi.shortName.removeAll()
         for i in 0...sn.registrationTeam - 1{
             sportsNavi.shortName.updateValue(CsvString[i * 2 + 1], forKey: CsvString[i * 2])
@@ -64,7 +64,7 @@ func ticketsUpload () -> Bool {
      buyTickets.removeAll()
     do {
         let text = try String(contentsOf: targetTextFilePath!, encoding: String.Encoding.utf8)
-        var CsvString = text.components(separatedBy: ",")
+        let CsvString = text.components(separatedBy: ",")
         homeScreen.user[ch.sale] = Int(CsvString[0])!
      //   checkScreen.buyCount = Int(CsvString[1])!
         buyTickets.removeAll()

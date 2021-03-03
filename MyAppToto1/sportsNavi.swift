@@ -30,7 +30,7 @@ struct sportsNaviControl {
     }
 }
 
-var sportsNavi = sportsNaviControl(shortName:[String:String] (),rankTable:[[String]](repeating: [String](repeating: "", count: 10),count: 57),rank:[[String]](repeating: [String](repeating: "", count: 3),count: 13),winLoss:[[String]](repeating: [String](repeating: "", count: 3),count: 13),score:[[String]](repeating: [String](repeating: "", count: 3),count: 13),starTable:[[String]](repeating: [String](repeating: "", count: 3),count: 13),registrationTeams: [18,22,17],display:0)
+var sportsNavi = sportsNaviControl(shortName:[String:String] (),rankTable:[[String]](repeating: [String](repeating: "", count: 10),count: 57),rank:[[String]](repeating: [String](repeating: "", count: 3),count: 13),winLoss:[[String]](repeating: [String](repeating: "", count: 3),count: 13),score:[[String]](repeating: [String](repeating: "", count: 3),count: 13),starTable:[[String]](repeating: [String](repeating: "", count: 3),count: 13),registrationTeams: [20,22,15],display:0)
 
 var basePoint = 113  // 仮置き、よくずれる
 struct cn {
@@ -53,11 +53,11 @@ struct sn {
     static let gainPoint = 7
     static let lossPoint = 8
     static let goalScore = 9
-    static let registrationTeam = 57    //  j1 18 j2 22 j3 17
+    static let registrationTeam = 57    //  j1 20 j2 22 j3 15
 }
 
 func sportsNaviDownload() -> Bool {
-    for jleague in 1...3{
+    for jleague in 1...3{   // edit
         
         let url = URL(string:"https://soccer.yahoo.co.jp/jleague/standings/j" + String(jleague))!
         let ss = HttpClientImpl()
@@ -75,7 +75,8 @@ func sportsNaviDownload() -> Bool {
         temporaryString = str.replacingOccurrences(of: "\r", with: "")
         str = temporaryString.replacingOccurrences(of: "\n", with: "")
       
-        if str.contains("現在、データはありません。") {
+        if str.contains("データがありません") {
+            //  シーズン開幕前
             return false
         }
         //  MARK:   word 切り出し--------------------------
@@ -127,6 +128,7 @@ func sportsNaviDownload() -> Bool {
             sportsNavi.rankTable[offset + registration][sn.gainPoint] = cells[registration * 10 + basePoint + 7]
             sportsNavi.rankTable[offset + registration][sn.lossPoint] = cells[registration * 10 + basePoint + 8]
             sportsNavi.rankTable[offset + registration][sn.goalScore] = cells[registration * 10 + basePoint + 9]
+            //  print("sportsNavi.rankTable \(sportsNavi.rankTable)")
         }
     }
     

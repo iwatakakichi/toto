@@ -30,7 +30,7 @@ class ViewControllerAnalysis: NSViewController, NSTableViewDataSource  {
         if resultScreen.labelYear == 0{
             let now = Date()
             let cal = Calendar.current
-            var dataComps = cal.dateComponents([.year, .month, .day, .hour, .minute], from: now)
+            let dataComps = cal.dateComponents([.year, .month, .day, .hour, .minute], from: now)
             resultScreen.labelYear = dataComps.year!
         }
         yearText.stringValue = String(resultScreen.labelYear)

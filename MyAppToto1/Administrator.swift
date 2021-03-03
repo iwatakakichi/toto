@@ -149,7 +149,6 @@ var homeScreen = HomeScreenControl(user:[1121,200_000_000,0,0,0],matchResult:Arr
 
 //  MARK:  MultiScreenControl
 struct MultiScreenControl {
-    var forecast:Array<Int> = Array<Int>(repeating: 0,count:13)
     var totoOnetotal:Array<Int> = Array<Int>(repeating: 0,count:3)
     var aggregate: [[Int]] = [[Int]](repeating: [Int](repeating: 0, count: 3),count: 13)
     var minimumPrize: Int
@@ -160,8 +159,7 @@ struct MultiScreenControl {
     var stamp: Int
     var notice:Int
     var noticeDisp = [[String]](repeating: [String](repeating: "", count: 3),count: 13)
-    init(forecast:[Int],totoOnetotal:[Int],aggregate:[[Int]],minimumPrize: Int,maximumPrize: Int,mark: [Int],singleDispPage:Int,master:Int,stamp:Int,notice:Int,noticeDisp:[[String]]){
-        self.forecast = forecast
+    init(totoOnetotal:[Int],aggregate:[[Int]],minimumPrize: Int,maximumPrize: Int,mark: [Int],singleDispPage:Int,master:Int,stamp:Int,notice:Int,noticeDisp:[[String]]){
         self.totoOnetotal = totoOnetotal
         self.aggregate = aggregate
         self.minimumPrize = minimumPrize
@@ -193,7 +191,7 @@ struct ms {
     static let afterCompression = 4
 }
 
-var multSCreen = MultiScreenControl(forecast: [Int](repeating: 0, count: 13),totoOnetotal: [Int](repeating: 0, count: 3),aggregate: [[Int]](repeating: [Int](repeating: 0, count: 3),count: 13) ,minimumPrize: 0,maximumPrize: 0,mark: Array<Int>(repeating: 0,count:5),singleDispPage:0,master:0,stamp:0,notice:0,noticeDisp : [[String]](repeating: [String](repeating: "", count: 3),count: 13))
+var multSCreen = MultiScreenControl(totoOnetotal: [Int](repeating: 0, count: 3),aggregate: [[Int]](repeating: [Int](repeating: 0, count: 3),count: 13) ,minimumPrize: 0,maximumPrize: 0,mark: Array<Int>(repeating: 0,count:5),singleDispPage:0,master:0,stamp:0,notice:0,noticeDisp : [[String]](repeating: [String](repeating: "", count: 3),count: 13))
 
 let textFileName = "totoOne.html"
 let documentDirectoryFileURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last

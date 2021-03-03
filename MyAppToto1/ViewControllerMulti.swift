@@ -12,7 +12,6 @@ class ViewControllerMulti: NSViewController, NSTableViewDataSource {
 
     @IBOutlet weak var voteView: NSTableView!
     @IBOutlet weak var checkMatrix: NSMatrix!
-    @IBOutlet weak var forecastMatrix: NSMatrix!
     @IBOutlet weak var radioButton: NSMatrix!
     @IBOutlet weak var judgeMatrix: NSMatrix!
     @IBOutlet weak var lowPrizeMatrix: NSMatrix!
@@ -427,10 +426,7 @@ class ViewControllerMulti: NSViewController, NSTableViewDataSource {
         voteDetailsMatrix.cells[4].intValue = Int32(multSCreen.mark[ms.afterCompression])
                 
         totoOneMasterButton.title = evacuationData
-                
-        for tag in 0...multSCreen.forecast.count - 1{
-            var _ = displayForecast(inDt:tag)
-        }
+        
     }
    
     @IBAction func clear(_ sender: Any) {
@@ -449,7 +445,6 @@ class ViewControllerMulti: NSViewController, NSTableViewDataSource {
         totoOneScreen.lowerLeftSideTabel = [[Int]](repeating: [Int](repeating: 0, count: 5),count: 13)
         loadView()
         announcementText.stringValue = ""
-        multSCreen.forecast = Array<Int>(repeating: 0,count:13)
         var _ = displayTeam()
     }
  
@@ -500,104 +495,6 @@ class ViewControllerMulti: NSViewController, NSTableViewDataSource {
                 voteDetailsMatrix.cells[cell].intValue = Int32(multSCreen.mark[cell])
             }
         }
-            
-        for match in 0...multSCreen.forecast.count - 1{
-            var _ = displayForecast(inDt:match)
-        }
-    }
-    
-    @IBAction func arrow(_ sender: Any) {
-        guard stampLabel.intValue == Int32(multSCreen.stamp) else {
-            print("Scrapped screen")
-            return
-        }
-        managment.bed = [[Int]](repeating: [Int](repeating: 2, count: 3),count: 13)
-        
-        for tag in 0...multSCreen.forecast.count - 1{
-            multSCreen.forecast[tag] = 1
-            var _ = displayForecast(inDt:tag)
-        }
-        
-    }
-  
-    @IBAction func forecastMatrix(_ sender: Any) {
-        guard stampLabel.intValue == Int32(multSCreen.stamp) else {
-            print("Scrapped screen")
-            return
-        }
-        
-        guard let matrix = sender as? NSMatrix else {
-            return
-        }
-        let row = matrix.selectedRow
-        for cell in 0...38{
-            checkMatrix.cells[cell].title = ""
-        }
-
-        if multSCreen.forecast[row] > 2{
-            multSCreen.forecast[row] = 0
-        }else{
-            multSCreen.forecast[row] += 1
-        }
-        var _ = displayForecast(inDt:row)
-        
-        
-        //  無印
-        if multSCreen.forecast[row] == 0{
-            managment.bed[row] = Array<Int>(repeating: 0,count:3)
-        }
-        //  ↓
-        if multSCreen.forecast[row] == 1{
-            managment.bed[row] = Array<Int>(repeating: 1,count:3)
-        }
-        //  順当
-        if multSCreen.forecast[row] == 2{
-            if managment.rate[row][0] > managment.rate[row][2]{
-                managment.bed[row] = [1,0,0]
-            }else{
-                managment.bed[row] = [0,0,1]
-            }
-        }
-        //  波乱
-        if multSCreen.forecast[row] == 3{
-            managment.bed[row] = Array<Int>(repeating: 0,count:3)
-            if  managment.rate[row][0] < 0.25{
-                managment.bed[row][0] = 1
-            }
-            if  managment.rate[row][1] < 0.25{
-                managment.bed[row][1] = 1
-            }
-            if  managment.rate[row][2] < 0.25{
-                managment.bed[row][2] = 1
-            }
-        }
-        
-        multSCreen.mark =  Array<Int>(repeating: 0,count:5)
-        for i in managment.bed {
-            var Count = 0
-            for j in i {
-                if j > 0 {
-                    Count += 1
-                }
-            }
-            if Count == 1{
-                multSCreen.mark[ms.single] += 1
-            }else if Count == 2{
-                multSCreen.mark[ms.double] += 1
-            }else if Count == 3{
-                multSCreen.mark[ms.triple] += 1
-            }
-        }
-        
-        if (multSCreen.mark[ms.single] + multSCreen.mark[ms.double] + multSCreen.mark[ms.triple]) == 13 {
-            multSCreen.mark[ms.multi] = Int(Int32(2 ^^ multSCreen.mark[ms.double]) * Int32(3 ^^ multSCreen.mark[ms.triple]))
-            for cell in 0...3{
-                voteDetailsMatrix.cells[cell].intValue = Int32(multSCreen.mark[cell])
-            }
-        }
-        
-        var _ = displayPush()
-
     }
     
     //  MARK:
@@ -742,18 +639,6 @@ class ViewControllerMulti: NSViewController, NSTableViewDataSource {
         }
     }
     
-    //  予想をセットする
-    func displayForecast(inDt:Int){
-        
-        switch multSCreen.forecast[inDt] {
-            case 0: forecastMatrix.cells[inDt].title = ""
-            case 1: forecastMatrix.cells[inDt].title = "↓"
-            case 2: forecastMatrix.cells[inDt].title = "順当"
-            case 3: forecastMatrix.cells[inDt].title = "波乱"
-            default: print("error0")
-        }
-        
-    }
     //  MARK:   ボタンタイトルをセットする
     func displayPush(){
         for match in 0...managment.match.count - 1{
